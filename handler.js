@@ -2,6 +2,7 @@ const express=require("express");
 const cors=require("cors");
 const serverless=require("serverless-http");
 const bodyParser=require("body-parser");
+const mysql = require("mysql");
 
 const app=express();
 
@@ -9,14 +10,27 @@ app.use(cors());
 // allows Express to parse JSON ddata that is sent on the body of any requests
 app.use(bodyParser.json());
 
-app.get("/tasks",function(request,response){
-   response.status(200).send({
-     tasks: [
-       {id: 1, text:"Clean the car", completed: false, dateDue:"2019-11-30", dateDone:""},
-       {id: 2, text:"buy lunch", completed: false, dateDue:"2019-11-29", dateDone:""},
-       {id: 3, text:"cut hair", completed: true, dateDue:"2019-11-11", dateDone:"2019-11-19"}
-     ]
-   });
+const connection = mysql.createConnection({
+  host: process.env.HOST, 
+  user: process.env.USER,
+  password: process.env.PASSWORD,
+  database: "todo_app"
+});
+
+// req dont need this for get
+app.get("/tasks", function(req, response) {
+  connection.query("SELECT * FROM task", function(err, data) {
+    if (err) {
+      console.log("Error fetching task", err);
+      response.status(500).json({
+        error: err
+      });
+    } else {
+      response.json({
+        tasks: data
+      });
+    }
+  });
 });
 
 app.delete("/tasks/:taskId", function(request,response){

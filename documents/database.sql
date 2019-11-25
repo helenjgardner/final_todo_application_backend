@@ -1,7 +1,7 @@
 --  Code to create database
 
 -- mysql -u root -p -h tr-database-instance.cvkjxhkotxbr.eu-west-2.rds.amazonaws.com
-
+-- serverless deploy --USER  --PASSWORD  --HOST
 CREATE DATABASE todo_app;
 
 USE todo_app;
