@@ -26,7 +26,7 @@ app.get("/tasks", function (request, response) {
         error: err
       });
     } else {
-      response.json({
+      response.status(200).json({
         tasks: data
       });
     }
@@ -34,9 +34,17 @@ app.get("/tasks", function (request, response) {
 });
 
 app.delete("/tasks/:taskId", function (request, response) {
-  // delete task
   const id = request.params.taskId;
-  response.status(200).send("Received request to delete task " + id);
+  connection.query("DELETE FROM task WHERE id = ?", [id], function (err, results, fields) {
+    if (err) {
+      console.log("Error fetching task", err);
+      response.status(500).json({
+        error: err
+      });
+    } else {
+      response.status(200).json()
+    }
+  });
 });
 
 
@@ -67,8 +75,13 @@ app.post("/tasks", function (request, response) {
       });
     } else {
       // respond with task id
-      response.json({
-        tasks: results.insertId
+      response.status(201).json({
+        taskID: results.insertId,
+        text: textValue,
+        dateDue: dateDue,
+        completed: false,
+        dateDone: "",
+        userid: userid
       });
     }
   });
