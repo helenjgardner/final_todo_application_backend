@@ -1,6 +1,6 @@
 --  Code to create database
 
--- mysql -u root -p -h tr-database-instance.cvkjxhkotxbr.eu-west-2.rds.amazonaws.com
+-- mysql -u root -p -h put instance in
 -- serverless deploy --USER  --PASSWORD  --HOST
 CREATE DATABASE todo_app;
 
@@ -20,9 +20,9 @@ INSERT INTO user VALUES ("tony.gardner","Tony","Gardner");
 CREATE TABLE task (text VARCHAR(75), 
                    completed boolean,
                    dateDue date,
-                   dateDone date,
-                   id VARCHAR(100), 
+                   dateDone date,                    
                    userid VARCHAR(75),  
+                   id MEDIUMINT NOT NULL AUTO_INCREMENT,
                    PRIMARY KEY(id),
                    FOREIGN KEY (userid) REFERENCES user(userid)
 );
@@ -34,4 +34,5 @@ INSERT INTO task VALUES("make cheesecake",true, "20191101","20191111", "4", "gra
 INSERT INTO task VALUES("make cheesecake",true, "20191102","20191112", "5", "helen.gardner");
 INSERT INTO task VALUES("super long task to check rendering even longer that this", false, "20191118","", "6", "tony.gardner");
 INSERT INTO task VALUES("make cheesecake",true, "20191103","20191110", "7", "tony.gardner");
+INSERT INTO task VALUES("cup of tea", false, "20191126","", "8", "helen.gardner");
 
