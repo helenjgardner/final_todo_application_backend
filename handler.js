@@ -17,7 +17,7 @@ const connection = mysql.createConnection({
   database: "todo_app"
 });
 
-// request not needed this for get
+// request not needed this for get / read 
 app.get("/tasks", function (request, response) {
   connection.query("SELECT * FROM task", function (err, data) {
     if (err) {
@@ -56,18 +56,18 @@ app.delete("/tasks/:taskId", function (request, response) {
 // userid
 // id
 
-// new task
+// create new task
 app.post("/tasks", function (request, response) {
   // assuming one task coming in on body is one object
-  // completed is default false and dateDone is default blank
   // taskid is autoincrement
   const textValue = request.body.text;
-  // *** NOTE FOR LATER dateDue is default value in react app - revisit
   const dateDue = request.body.dateDue;
+  const completed = request.body.completed;
+  const dateDone = request.body.dateDone;
   const userid = request.body.userid;
 
   const query = "INSERT INTO task (text, completed, dateDone, dateDue, userid) VALUES (?, ?, ?, ?, ?)";
-  connection.query(query, [textValue, false, "", dateDue, userid], function (err, results, fields) {
+  connection.query(query, [textValue, completed, dateDone, dateDue, userid], function (err, results, fields) {
     if (err) {
       console.log("Error fetching task", err);
       response.status(500).json({
@@ -79,8 +79,8 @@ app.post("/tasks", function (request, response) {
         taskID: results.insertId,
         text: textValue,
         dateDue: dateDue,
-        completed: false,
-        dateDone: "",
+        completed: completed,
+        dateDone: dateDone,
         userid: userid
       });
     }
@@ -90,8 +90,21 @@ app.post("/tasks", function (request, response) {
 
 app.put("/tasks/:taskId", function (request, response) {
   // update task
-  const task = request.body;
+  const textValue = request.body.text;
+  const dateDue = request.body.dateDue;
+  const completed = request.body.completed;
+  const dateDone = request.body.dateDone;
   const id = request.params.taskId;
-  response.status(200).send("Received a request to update task " + id + " with " + task.text + task.completed)
+  const query = "update task  SET text=?, completed=?, dateDone=?, dateDue=?  WHERE id=?";
+  connection.query(query, [textValue, completed, dateDone, dateDue, id], function (err, results, fields) {
+    if (err) {
+      console.log("Error fetching task", err);
+      response.status(500).json({
+        error: err
+      });
+    } else {
+      response.status(200).json()
+    }
+  });
 });
 module.exports.tasks = serverless(app);
