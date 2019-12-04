@@ -47,18 +47,8 @@ app.delete("/tasks/:taskId", function (request, response) {
   });
 });
 
-
-// my fields
-// text
-// completed
-// dateDone
-// dateDue
-// userid
-// id
-
 // create new task
 app.post("/tasks", function (request, response) {
-  // assuming one task coming in on body is one object
   // taskid is autoincrement
   const textValue = request.body.text;
   const dateDue = request.body.dateDue;
